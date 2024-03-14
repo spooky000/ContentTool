@@ -1,0 +1,14 @@
+{
+	"p4server": "192.168.1.210:1666",
+	"schemaDir": "../../Schema/",
+	"xlsxDir": "../../Tables/",
+	"csDir": "../../Cs/",
+	"dataDir": "../../Outputs/",
+
+	"contents": {
+		"Sample": {
+			"schema": "Sample.schema.json",
+			"xlsx": "Sample.xlsx"
+		}
+	}
+}

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ContentTool": {
+      "commandName": "Project",
+      "commandLineArgs": "convert"
+    }
+  }
+}
