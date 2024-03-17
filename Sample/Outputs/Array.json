@@ -1,0 +1,30 @@
+{
+  "ArrayList": [
+    {
+      "Id": "Item1",
+      "SingleColumn": [
+        1.0,
+        2.0,
+        3.0
+      ],
+      "MultiColumn": [
+        "multi10",
+        "multi11",
+        "multi12"
+      ]
+    },
+    {
+      "Id": "Item2",
+      "SingleColumn": [
+        4.0,
+        5.0,
+        6.0
+      ],
+      "MultiColumn": [
+        "multi40",
+        "multi41",
+        "multi42"
+      ]
+    }
+  ]
+}

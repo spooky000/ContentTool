@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "SimpleTableEnum",
+  "type": "object",
+  "additionalProperties": false,
+  "definitions": {
+    "SimpleList_IdEnum": {
+      "type": "string",
+      "enum": [
+        "None",
+        "Item10",
+        "Item11",
+        "Item20",
+        "Item21"
+      ]
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "ObjectTableEnum",
+  "type": "object",
+  "additionalProperties": false,
+  "definitions": {
+    "ObjectList_IdEnum": {
+      "type": "string",
+      "enum": [
+        "None",
+        "ObjectItem1",
+        "ObjectItem2"
+      ]
+    }
+  }
+}

@@ -6,9 +6,25 @@
 	"dataDir": "../../Outputs/",
 
 	"contents": {
-		"Sample": {
-			"schema": "Sample.schema.json",
-			"xlsx": "Sample.xlsx"
+		"Simple": {
+			"schema": "Simple.schema.json",
+			"xlsx": "Simple.xlsx"
+		},
+		"Object": {
+			"schema": "Object.schema.json",
+			"xlsx": "Object.xlsx"
+		},
+		"Array": {
+			"schema": "Array.schema.json",
+			"xlsx": "Array.xlsx"
+		},
+		"MultiRow": {
+			"schema": "MultiRow.schema.json",
+			"xlsx": "MultiRow.xlsx"
+		},
+		"MultiXlsx": {
+			"schema": "MultiXlsx.schema.json",
+			"xlsx": "MultiXlsx_*"
 		}
 	}
 }

@@ -1,0 +1,16 @@
+{
+  "SimpleList": [
+    {
+      "Id": "Item10",
+      "IntegerValue": 100.0,
+      "FloatValue": 10.123,
+      "StringValue": "문자"
+    },
+    {
+      "Id": "Item11",
+      "IntegerValue": 200.0,
+      "FloatValue": 20.456,
+      "StringValue": "문자2"
+    }
+  ]
+}

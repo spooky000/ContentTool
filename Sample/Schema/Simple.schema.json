@@ -1,0 +1,71 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "SimpleTable",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "SimpleList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Simple"
+      },
+      "content_config": {
+        "sheets": [
+          "Sheet1"
+        ],
+        "enums": [
+          "Id"
+        ],
+        "keys": {
+          "Id": {
+            "fields": [
+              "Id"
+            ],
+            "unique": "true"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "GenderEnum": {
+      "type": "string",
+      "enum": [
+        "None",
+        "Male",
+        "Female",
+        "Max"
+      ]
+    },
+    "Simple": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "IntegerValue": {
+          "type": "number",
+          "format": "integer"
+        },
+        "FloatValue": {
+          "type": "number",
+          "format": "float"
+        },
+        "StringValue": {
+          "type": "string"
+        },
+        "DateTimeValue": {
+          "type": "string",
+          "format": "datetime"
+        },
+        "BooleanValue": {
+          "type": "boolean"
+        },
+        "EnumValue": {
+          "$ref": "#/definitions/GenderEnum"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,70 @@
+﻿{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "ObjectTable",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "ObjectList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Object"
+      },
+      "content_config": {
+        "sheets": [
+          "Sheet1"
+        ],
+        "enums": [
+          "Id"
+        ],
+        "keys": {
+          "Id": {
+            "fields": [
+              "Id"
+            ],
+            "unique": "true"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "InnerObject": {
+      "type": "object",
+      "properties": {
+        "Value1": {
+          "type": "string"
+        },
+        "Value2": {
+          "type": "number",
+          "format": "integer"
+        },
+        "Value3": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "integer"
+          },
+          "extra": {
+            "xlsxRead": "SingleColumn"
+          }
+        },
+        "SimpleId": {
+          "$ref": "../Outputs/Simple.enum.json#/definitions/SimpleList_IdEnum"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Object": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "Object": {
+          "$ref": "#/definitions/InnerObject"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

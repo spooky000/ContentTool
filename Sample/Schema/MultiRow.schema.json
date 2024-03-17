@@ -1,0 +1,77 @@
+﻿{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "MultiRowTable",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "MultiRowList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/MultiRow"
+      },
+      "content_config": {
+        "sheets": [
+          "Sheet1"
+        ],
+        "enums": [
+          "Id"
+        ],
+        "keys": {
+          "Id": {
+            "fields": [
+              "Id"
+            ],
+            "unique": "true"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "SubObject": {
+      "type": "object",
+      "properties": {
+        "SubId": {
+          "type": "string"
+        },
+        "SubValaue1": {
+          "type": "number",
+          "format": "integer"
+        },
+        "SubValaue2": {
+          "type": "string"
+        },
+        "SubArray": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "integer"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "MultiRow": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "SubObjectArray": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SubObject"
+          },
+          "extra": {
+            "xlsxRead": "MultiRow"
+          }
+        }
+      },
+      "extra": {
+        "xlsxRead": "MultiRow"
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "SimpleList": [
+    {
+      "Id": "Item1",
+      "IntegerValue": 100.0,
+      "FloatValue": 10.123,
+      "StringValue": "문자",
+      "DateTimeValue": "2023-12-05T17:28:43.511Z",
+      "BooleanValue": true,
+      "EnumValue": "Male"
+    },
+    {
+      "Id": "Item2",
+      "IntegerValue": 200.0,
+      "FloatValue": 20.456,
+      "StringValue": "문자2",
+      "DateTimeValue": "2024-03-17T17:28:43.511Z",
+      "BooleanValue": false,
+      "EnumValue": "Female"
+    }
+  ]
+}

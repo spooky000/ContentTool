@@ -1,0 +1,30 @@
+{
+  "ObjectList": [
+    {
+      "Id": "ObjectItem1",
+      "Object": {
+        "Value1": "string1",
+        "Value2": 100.0,
+        "Value3": [
+          1.0,
+          2.0,
+          3.0
+        ],
+        "SimpleId": "Item1"
+      }
+    },
+    {
+      "Id": "ObjectItem2",
+      "Object": {
+        "Value1": "string2",
+        "Value2": 200.0,
+        "Value3": [
+          4.0,
+          5.0,
+          6.0
+        ],
+        "SimpleId": "Item2"
+      }
+    }
+  ]
+}

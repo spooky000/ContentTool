@@ -1,0 +1,57 @@
+﻿{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "ArrayTable",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "ArrayList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Array"
+      },
+      "content_config": {
+        "sheets": [
+          "Sheet1"
+        ],
+        "enums": [
+          "Id"
+        ],
+        "keys": {
+          "Id": {
+            "fields": [
+              "Id"
+            ],
+            "unique": "true"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Array": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "SingleColumn": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "integer"
+          },
+          "extra": {
+            "xlsxRead": "SingleColumn"
+          }
+        },
+        "MultiColumn": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
