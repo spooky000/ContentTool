@@ -59,3 +59,27 @@ public class FileWrter : IFileWrter
     }
 }
 
+
+
+public static class FileWriterFactory
+{
+    public static IFileWrter CreateFileWriter(ContentToolConfig toolConfig, string description)
+    {
+        if (string.IsNullOrEmpty(toolConfig.P4Server) == false)
+        {
+            ACPerforce perforce = new ACPerforce(toolConfig.P4Server);
+            perforce.Connect();
+            perforce.SetClientFromPath(Path.GetFullPath(toolConfig.DataDir));
+
+            ACChangelist changelist = perforce.CreateChangeList(description);
+
+            return new P4FileWrter(perforce, changelist);
+        }
+        else
+        {
+            return new FileWrter();
+        }
+    }
+}
+
+

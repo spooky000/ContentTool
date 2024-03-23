@@ -25,26 +25,13 @@ namespace ContentTool.Command
         {
             try
             {
-                switch (_libExcel)
-                {
-                    case LibExcelEnum.OpenXml:
-                        {
-                            OpenXmlExcel excelReader = new OpenXmlExcel();
-                            return excelReader.Read(excelFile);
-                        }
-                    case LibExcelEnum.Office:
-                        {
-                            OfficeExcel excelReader = new OfficeExcel();
-                            return excelReader.Read(excelFile);
-                        }
-                }
+                IExcelReader reader = ExcelReaderFactory.CreateExcelReader(_libExcel);
+                return reader.Read(excelFile);
             }
             catch (Exception)
             {
                 throw;
             }
-
-            return null;
         }
 
         public async Task<bool> ConvertData(IFileWrter fileWriter)
@@ -124,15 +111,8 @@ namespace ContentTool.Command
             if (await toolConfig.Read(opts.Config) == false)
                 return -1;
 
-            IFileWrter fileWriter = new FileWrter();
+            IFileWrter fileWriter = FileWriterFactory.CreateFileWriter(toolConfig, "convert");
 
-/*
-            ACPerforce perforce = new ACPerforce(toolConfig.P4Server);
-            perforce.Connect();
-            perforce.SetClientFromPath(Path.GetFullPath(toolConfig.DataDir));
-
-            ACChangelist changelist = perforce.CreateChangeList("convert");
-*/
             List<ContentConfig> contentList = toolConfig.GetContentList(opts.Content);
 
             try

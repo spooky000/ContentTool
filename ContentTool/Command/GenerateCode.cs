@@ -89,14 +89,7 @@ namespace ContentTool.Command
             if (await toolConfig.Read(opts.Config) == false)
                 return -1;
 
-            IFileWrter fileWriter = new FileWrter();
-            /*
-                        ACPerforce perforce = new ACPerforce(toolConfig.P4Server);
-                        perforce.Connect();
-                        perforce.SetClientFromPath(Path.GetFullPath(toolConfig.CsDir));
-            ACChangelist changelist = perforce.CreateChangeList("generate code");
-            */
-
+            IFileWrter fileWriter = FileWriterFactory.CreateFileWriter(toolConfig, "generate code");
 
             if (opts.NJson == true)
             {
