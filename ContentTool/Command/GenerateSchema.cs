@@ -1,5 +1,5 @@
 ﻿using System.Data;
-using ContentTool.Conveter;
+using ContentTool.JsonGenerator;
 using ContentTool.Schema;
 using ContentTool.ExcelReader;
 using ContentTool.EnumReader;
@@ -40,27 +40,28 @@ namespace ContentTool.Command
                 return true;
 
             string schemaFile = Path.Combine(_toolConfig.SchemaDir, _content.Schema);
-            var jsonSchema = new ACJsonSchema();
-            jsonSchema.Read(schemaFile);
+
+            if(File.Exists(schemaFile) == true)
+            {
+                ConsoleEx.WriteErrorLine($"WriteSchema error. {schemaFile} already exists");
+                return false;
+            }
 
             var excelFiles = _toolConfig.GetExcelFileList(_content);
-            foreach ((string brandName, string excelFile) in excelFiles)
+            if (excelFiles.Count > 0)
             {
-                Console.WriteLine($"start ExcelToJson. {_content.DataJson(brandName)}");
+                Console.WriteLine($"start JsonSchema. {schemaFile}");
 
-                DataSet? dataSet = ReadExcel(excelFile);
+                DataSet? dataSet = ReadExcel(excelFiles[0].excelFile);
                 if (dataSet != null)
                 {
-                    ExcelToJsonData excelToJsonData = new ExcelToJsonData(dataSet, jsonSchema);
-                    string jsonContent = excelToJsonData.Generate();
-
-                    string dataFile = Path.Combine(_toolConfig.DataDir, _content.DataJson(brandName));
-
-                    await fileWriter.WriteFile(dataFile, jsonContent);
-                    Console.WriteLine($"write. {dataFile}");
+                    JsonSchemaGenerator generator = new JsonSchemaGenerator(_content.Name, dataSet);
+                    string jsonContent = generator.Generate();
+                    await fileWriter.WriteFile(schemaFile, jsonContent);
+                    Console.WriteLine($"write. {schemaFile}");
                 }
 
-                Console.WriteLine($"end ExcelToJson. {_content.DataJson(brandName)}");
+                Console.WriteLine($"start JsonSchema. {schemaFile}");
             }
 
             return true;
@@ -78,6 +79,12 @@ namespace ContentTool.Command
 
             try
             {
+                foreach (var content in contentList)
+                {
+                    GenerateSchema generator = new GenerateSchema(opts.LibExcel, toolConfig, content);
+                    await generator.WriteSchema(fileWriter);
+                }
+
                 fileWriter.RevertUnchangedFiles();
             }
             catch (Exception ex)

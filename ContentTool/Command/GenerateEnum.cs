@@ -1,4 +1,4 @@
-using ContentTool.Conveter;
+using ContentTool.JsonGenerator;
 using ContentTool.EnumReader;
 using ContentTool.Schema;
 using ToolCommon;
@@ -40,7 +40,7 @@ namespace ContentTool.Command
 
             var enumData = ReadZoneIdEnum();
 
-            Conveter.ZoneDataEnum zoneDataEnum = new Conveter.ZoneDataEnum(enumData);
+            JsonGenerator.ZoneDataEnum zoneDataEnum = new JsonGenerator.ZoneDataEnum(enumData);
             string jsonEnumContent = zoneDataEnum.Generate();
 
             string enumFile = Path.Combine(_toolConfig.DataDir, _toolConfig.zoneNameEnum);

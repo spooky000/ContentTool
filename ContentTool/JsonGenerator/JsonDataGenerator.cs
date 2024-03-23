@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Schema;
 using NJsonSchema;
 
-namespace ContentTool.Conveter
+namespace ContentTool.JsonGenerator
 {
     public static class DataRowExtentions
     {

@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NJsonSchema;
 
-namespace ContentTool.Conveter
+namespace ContentTool.JsonGenerator
 {
     public static class JsonWriterHelper
     {

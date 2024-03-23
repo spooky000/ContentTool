@@ -2,7 +2,7 @@ using System.Data;
 using ContentTool.Schema;
 using Newtonsoft.Json.Schema;
 using NJsonSchema;
-using ContentTool.Conveter;
+using ContentTool.JsonGenerator;
 
 namespace ContentTool.EnumReader
 {
