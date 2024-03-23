@@ -5,7 +5,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace ContentTool.ExcelReader;
 
-public class OfficeExcel
+public class OfficeExcel : IExcelReader
 {
     static int HEADER_ROWS = 2;
 

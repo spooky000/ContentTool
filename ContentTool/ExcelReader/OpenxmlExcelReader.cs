@@ -5,7 +5,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace ContentTool.ExcelReader;
 
-public class OpenXmlExcel
+public class OpenXmlExcel : IExcelReader
 {
     static int HEADER_ROWS = 2;
 
@@ -143,7 +143,8 @@ public class OpenXmlExcel
     }
     public DataSet? Read(string fileName)
     {
-        using SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(fileName, false);
+        FileStream reader = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        using SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(reader, false);
 
         var sheets = spreadsheetDocument.WorkbookPart?.Workbook.Sheets?.Elements<Sheet>();
         if (sheets == null)
