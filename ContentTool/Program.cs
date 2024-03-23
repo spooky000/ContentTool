@@ -113,6 +113,25 @@ namespace ContentTool
         public IEnumerable<string> Content { get { return _content; } }
     }
 
+    [Verb("genschame", HelpText = "generate schema")]
+    public class GenerateSchemaOptions
+    {
+        readonly string _config;
+        readonly IEnumerable<string> _content;
+
+        public GenerateSchemaOptions(string config, IEnumerable<string> content)
+        {
+            _config = config;
+            _content = content;
+        }
+
+        [Option(Default = (string)Constants.ConfigFile)]
+        public string Config { get { return _config; } }
+
+        [Option]
+        public IEnumerable<string> Content { get { return _content; } }
+    }
+
 
     internal class Program
     {
