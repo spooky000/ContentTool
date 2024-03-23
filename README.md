@@ -18,20 +18,24 @@ ContentTool.json 설정 파일 생성 (Sample/ContentTool.json 참고)
 ./ContentTool.exe genschema
 ```
 
+
 엑셀 파일을 json 파일로 변환
 ```
 ./ContentTool.exe convert
 ```
+
 
 엑셀 파일에서  json enum 생성
 ```
 ./ContentTool.exe genenum
 ```
 
+
 json 파일 검증
 ```
 ./ContentTool.exe validate
 ```
+
 
 json schema에서 c# 코드 생성
 ```
