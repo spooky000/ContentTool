@@ -98,14 +98,7 @@ namespace ContentTool.Command
             if (await toolConfig.Read(opts.Config) == false)
                 return -1;
 
-            IFileWrter fileWriter = new FileWrter();
-/*
-            ACPerforce perforce = new ACPerforce(toolConfig.P4Server);
-            perforce.Connect();
-            perforce.SetClientFromPath(Path.GetFullPath(toolConfig.DataDir));
-
-            ACChangelist changelist = perforce.CreateChangeList("convert");
-*/
+            IFileWrter fileWriter = FileWriterFactory.CreateFileWriter(toolConfig, "convert");
 
             ZoneDataEnum zoneDataEnum = new ZoneDataEnum(toolConfig);
             await zoneDataEnum.Generate(fileWriter);
