@@ -69,6 +69,10 @@ namespace ContentTool.Command
 
         public static async Task<int> Run(GenerateSchemaOptions opts)
         {
+            Console.WriteLine("-----------------------------------------");
+            Console.WriteLine("- GenerateSchema");
+            Console.WriteLine("-----------------------------------------");
+
             ContentToolConfig toolConfig = new ContentToolConfig();
             if (await toolConfig.Read(opts.Config) == false)
                 return -1;

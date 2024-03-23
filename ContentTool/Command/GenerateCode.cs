@@ -85,6 +85,10 @@ namespace ContentTool.Command
 
         public static async Task<int> Run(GenCodeOptions opts)
         {
+            Console.WriteLine("-----------------------------------------");
+            Console.WriteLine("- GenerateCode");
+            Console.WriteLine("-----------------------------------------");
+
             ContentToolConfig toolConfig = new ContentToolConfig();
             if (await toolConfig.Read(opts.Config) == false)
                 return -1;

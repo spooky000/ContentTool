@@ -6,6 +6,12 @@ namespace ContentTool.Command
     {
         public static async Task ValidateAllData(ContentToolConfig toolConfig, bool debug, bool detail, bool throwException)
         {
+            Console.WriteLine("-----------------------------------------");
+            Console.WriteLine("- ValidateAllData");
+            Console.WriteLine("-----------------------------------------");
+
+            Console.WriteLine("start ValidateAllData");
+
             foreach (ContentConfig content in toolConfig.Contents)
             {
                 JsonDataValiator valiator = new JsonDataValiator(content, toolConfig, throwException);
@@ -27,6 +33,8 @@ namespace ContentTool.Command
                     await valiator.ValidateJson(file, debug, detail);
                 }
             }
+
+            Console.WriteLine("end ValidateAllData");
         }
 
         public static async Task<int> Run(ValidateOptions opts)

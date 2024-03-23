@@ -94,6 +94,10 @@ namespace ContentTool.Command
     {
         public static async Task<int> Run(GenerateEnumOptions opts)
         {
+            Console.WriteLine("-----------------------------------------");
+            Console.WriteLine("- GenerateEnum");
+            Console.WriteLine("-----------------------------------------");
+
             ContentToolConfig toolConfig = new ContentToolConfig();
             if (await toolConfig.Read(opts.Config) == false)
                 return -1;

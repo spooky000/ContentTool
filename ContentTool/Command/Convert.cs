@@ -107,6 +107,10 @@ namespace ContentTool.Command
     {
         public static async Task<int> Run(ConvertOptions opts)
         {
+            Console.WriteLine("-----------------------------------------");
+            Console.WriteLine("- Convert");
+            Console.WriteLine("-----------------------------------------");
+
             ContentToolConfig toolConfig = new ContentToolConfig();
             if (await toolConfig.Read(opts.Config) == false)
                 return -1;
@@ -133,7 +137,7 @@ namespace ContentTool.Command
 
                 if (opts.SkipValidate == false)
                 {
-                    await Validate.ValidateAllData(toolConfig, true, false, true);
+                    await Validate.ValidateAllData(toolConfig, false, false, true);
                 }
 
                 fileWriter.RevertUnchangedFiles();

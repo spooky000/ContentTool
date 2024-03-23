@@ -113,20 +113,25 @@ namespace ContentTool
         public IEnumerable<string> Content { get { return _content; } }
     }
 
-    [Verb("genschame", HelpText = "generate schema")]
+    [Verb("genschema", HelpText = "generate schema")]
     public class GenerateSchemaOptions
     {
         readonly string _config;
+        LibExcelEnum _libExcel;
         readonly IEnumerable<string> _content;
 
-        public GenerateSchemaOptions(string config, IEnumerable<string> content)
+        public GenerateSchemaOptions(string config, LibExcelEnum libExcel, IEnumerable<string> content)
         {
             _config = config;
+            _libExcel = LibExcel;
             _content = content;
         }
 
         [Option(Default = (string)Constants.ConfigFile)]
         public string Config { get { return _config; } }
+
+        [Option(Default = LibExcelEnum.OpenXml, HelpText = "OpenXml or Office")]
+        public LibExcelEnum LibExcel { get { return _libExcel; } }
 
         [Option]
         public IEnumerable<string> Content { get { return _content; } }
@@ -144,12 +149,17 @@ namespace ContentTool
                 with.HelpWriter = Console.Error;
             });
 
-            return await parser.ParseArguments<GenCodeOptions, ConvertOptions, ValidateOptions, GenerateEnumOptions>(args)
+            return await parser.ParseArguments<GenCodeOptions, 
+                ConvertOptions, 
+                ValidateOptions, 
+                GenerateEnumOptions,
+                GenerateSchemaOptions>(args)
               .MapResult(
                 (GenCodeOptions opts) => Command.GenerateCode.Run(opts),
                 (ConvertOptions opts) => Command.Convert.Run(opts),
                 (ValidateOptions opts) => Command.Validate.Run(opts),
                 (GenerateEnumOptions opts) => Command.GenerateEnum.Run(opts),
+                (GenerateSchemaOptions opts) => Command.GenerateSchema.Run(opts),
                 errs => Task.FromResult(1));
         }
     }
