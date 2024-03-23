@@ -3,12 +3,38 @@ using System.Runtime.InteropServices.Marshalling;
 using System.Text;
 using System.Text.RegularExpressions;
 using ContentTool.Schema;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Schema;
 using NJsonSchema;
 
 namespace ContentTool.Conveter
 {
+    public static class DataRowExtentions
+    {
+        public static string ToJsonString(this DataRow row)
+        {
+            StringBuilder sb = new StringBuilder();
+            StringWriter sw = new StringWriter(sb);
+
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                writer.WriteStartObject();
+                writer.Formatting = Formatting.Indented;
+
+                foreach(DataColumn column in row.Table.Columns)
+                {
+                    writer.WritePropertyName(column.ColumnName);
+                    writer.WriteValue(row[column.ColumnName]);
+                }
+
+            }
+
+            return sb.ToString();
+        }
+
+    }
+
     public class RowObject
     {
         readonly List<DataRow> _rows;
@@ -156,7 +182,7 @@ namespace ContentTool.Conveter
             }
         }
 
-        void WriteRows(JsonWriter writer, RowObject rowObject, ACJsonSchema objectSchema)
+         void WriteRows(JsonWriter writer, RowObject rowObject, ACJsonSchema objectSchema)
         {
             while (rowObject.Count > 0)
             {
@@ -287,7 +313,7 @@ namespace ContentTool.Conveter
             if (objectSchema.Definition != null)
                 objectSchema = objectSchema.Definition;
 
-            var writeValue = (List<ACJsonSchemaProperty> properties, string columnName, RowObject rowObject) =>
+            var writeProperties = (List<ACJsonSchemaProperty> properties, string columnName, RowObject rowObject) =>
             {
                 foreach (var property in properties)
                 {
@@ -305,14 +331,14 @@ namespace ContentTool.Conveter
             switch (objectSchema.XlsxRead)
             {
                 case XlsxReadEnum.SingleRow:
-                    writeValue(objectSchema.Properties, columnName, rowObject);
+                    writeProperties(objectSchema.Properties, columnName, rowObject);
                     break;
                 case XlsxReadEnum.MultiRow:
                     var properties = objectSchema.Properties;
                     var multiRowObject = rowObject.GetMultiRowObject(properties[0].Name);
 
                     rowCount = multiRowObject.Count;
-                    writeValue(properties, columnName, multiRowObject);
+                    writeProperties(properties, columnName, multiRowObject);
                     break;
                 case XlsxReadEnum.SingleColumn:
                     var row = rowObject.GetFirstRow();
@@ -348,7 +374,7 @@ namespace ContentTool.Conveter
 
                 if (enumValue is null)
                 {
-                    writer.WriteNull();
+                    writer.WriteValue(stringValue);
                 }
                 else if (enumValue is long)
                 {
@@ -361,11 +387,8 @@ namespace ContentTool.Conveter
             }
         }
 
-        bool WriteValue(JsonWriter writer, object value, ACJsonSchema schema)
+        bool WriteSimpleValue(JsonWriter writer, object value, ACJsonSchema schema)
         {
-            if (schema.Definition != null)
-                schema = schema.Definition;
-
             switch (schema.Type)
             {
                 case JsonObjectType.Boolean:
@@ -407,6 +430,59 @@ namespace ContentTool.Conveter
             return true;
         }
 
+        bool WriteArray(JsonWriter writer, RowObject rowObject, ACJsonSchema schema, string columnName)
+        {
+            if (schema.Item == null)
+                return false;
+
+            var row = rowObject.GetFirstRow();
+            if (row == null)
+                return false;
+
+            writer.WriteStartArray();
+
+            switch (schema.XlsxRead)
+            {
+                case XlsxReadEnum.SingleRow:
+                    int maxArrayCount = GetArrayMaxCount(row.Table, columnName);
+
+                    for (int i = 0; i < maxArrayCount; i++)
+                    {
+                        string arrayColumnName = $"{columnName}[{i}]";
+                        WriteValue(writer, rowObject, schema.Item, arrayColumnName);
+                    }
+                    break;
+                case XlsxReadEnum.MultiRow:
+                    // TODO: columName을 안 넘겨서 여기만 오브젝트 컬럼명의 일관성이 없다. 수정 필요.
+                    WriteRows(writer, rowObject, schema.Item);
+                    break;
+                case XlsxReadEnum.SingleColumn:
+                    object value = row[columnName];
+                    if (schema.Item.Properties.Count == 0)
+                    {
+                        List<string> tokens = ((string)value).Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
+                        if (tokens.Count > 0)
+                        {
+                            foreach (string token in tokens)
+                            {
+                                WriteSimpleValue(writer, token, schema.Item);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        WriteSingleColumnToArray(writer, (string)value, schema.Item, columnName);
+                    }
+                    break;
+                default:
+                    throw new NotImplementedException("not support");
+            }
+
+            writer.WriteEndArray();
+
+            return true;
+        }
+
         bool WriteValue(JsonWriter writer, RowObject rowObject, ACJsonSchema schema, string columnName)
         {
             if (schema.Definition != null)
@@ -416,99 +492,39 @@ namespace ContentTool.Conveter
             if (row == null)
                 return false;
 
-            if (schema.Enum != null)
+            try
             {
-                object value = row[columnName];
-                WriteEnumValue(writer, value, schema.Enum);
-                return true;
-            }
+   
+                if (schema.Enum != null)
+                {
+                    object value = row[columnName];
+                    WriteEnumValue(writer, value, schema.Enum);
+                    return true;
+                }
 
-            switch (schema.Type)
-            {
-                case JsonObjectType.Array:
-                    {
-                        if (schema.Item != null)
+                switch (schema.Type)
+                {
+                    case JsonObjectType.Array:
+                        WriteArray(writer, rowObject, schema, columnName);
+                        break;
+                    case JsonObjectType.Object:
+                        return WriteObject(writer, rowObject, schema, columnName) > 0;
+                    case JsonObjectType.Boolean:
+                    case JsonObjectType.Integer:
+                    case JsonObjectType.Number:
+                    case JsonObjectType.String:
                         {
-                            writer.WriteStartArray();
-
-                            switch (schema.XlsxRead)
-                            {
-                                case XlsxReadEnum.SingleRow:
-                                    int maxArrayCount = GetArrayMaxCount(row.Table, columnName);
-
-                                    for (int i = 0; i < maxArrayCount; i++)
-                                    {
-                                        string arrayColumnName = $"{columnName}[{i}]";
-                                        WriteValue(writer, rowObject, schema.Item, arrayColumnName);
-                                    }
-                                    break;
-                                case XlsxReadEnum.MultiRow:
-                                    WriteRows(writer, rowObject, schema.Item);
-                                    break;
-                                case XlsxReadEnum.SingleColumn:
-                                    object value = row[columnName];
-                                    if (schema.Item.Properties.Count == 0)
-                                    {
-                                        List<string> tokens = ((string)value).Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
-                                        if (tokens.Count > 0)
-                                        {
-                                            foreach (string token in tokens)
-                                            {
-                                                WriteValue(writer, token, schema.Item);
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        WriteSingleColumnToArray(writer, (string)value, schema.Item, columnName);
-                                    }
-                                    break;
-                                default:
-                                    throw new NotImplementedException("not support");
-                            }
-
-                            writer.WriteEndArray();
+                            object value = row[columnName];
+                            WriteSimpleValue(writer, value, schema);
+                            break;
                         }
-                    }
-                    break;
-                case JsonObjectType.Boolean:
-                    {
-                        object value = row[columnName];
-                        if (value == null || value == DBNull.Value || string.IsNullOrEmpty((string)value) == true)
-                            writer.WriteValue(false);
-                        else
-                            writer.WriteValue(System.Convert.ToBoolean(value));
-                    }
-                    break;
-                case JsonObjectType.Integer:
-                    {
-                        object value = row[columnName];
-                        if (value == null || value == DBNull.Value || string.IsNullOrEmpty((string)value) == true)
-                            writer.WriteValue(0);
-                        else
-                            writer.WriteValue(System.Convert.ToInt64(value));
-                    }
-                    break;
-                case JsonObjectType.Number:
-                    {
-                        object value = row[columnName];
-                        if (value == null || value == DBNull.Value || string.IsNullOrEmpty((string)value) == true)
-                            writer.WriteValue(0);
-                        else
-                            writer.WriteValue(System.Convert.ToDouble(value));
-                    }
-                    break;
-                case JsonObjectType.String:
-                    {
-                        object value = row[columnName];
-                        if (value == null || value == DBNull.Value)
-                            writer.WriteValue("");
-                        else
-                            writer.WriteValue((string)value);
-                    }
-                    break;
-                case JsonObjectType.Object:
-                    return WriteObject(writer, rowObject, schema, columnName) > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                ConsoleEx.WriteErrorLine(ex);
+                ConsoleEx.WriteErrorLine($"WriteValue error. columnName: {columnName}, row: {rowObject.GetFirstRow()?.ToJsonString()}");
+                throw new Exception("WriteValue error");
             }
 
             return true;
