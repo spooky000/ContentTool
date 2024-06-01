@@ -9,7 +9,7 @@
       "items": {
         "$ref": "#/definitions/Simple"
       },
-      "content_config": {
+      "x-contentConfig": {
         "sheets": [
           "Sheet1"
         ],

@@ -9,7 +9,7 @@
       "items": {
         "$ref": "#/definitions/Object"
       },
-      "content_config": {
+      "x-contentConfig": {
         "sheets": [
           "Sheet1"
         ],
@@ -44,15 +44,63 @@
             "type": "number",
             "format": "integer"
           },
-          "extra": {
-            "xlsxRead": "SingleColumn"
-          }
+          "x-valueRange": "SingleColumn"
         },
         "SimpleId": {
           "$ref": "../Outputs/Simple.enum.json#/definitions/SimpleList_IdEnum"
         }
       },
       "additionalProperties": false
+    },
+    "SingleColumnObject": {
+      "type": "object",
+      "properties": {
+        "Value1": {
+          "type": "string"
+        },
+        "Value2": {
+          "type": "number",
+          "format": "integer"
+        }
+      },
+      "x-valueRange": "SingleColumn"
+    },
+    "Spring": {
+      "type": "object",
+      "properties": {
+        "Value1": {
+          "type": "string"
+        },
+        "Value2": {
+          "type": "number",
+          "format": "integer"
+        }
+      }
+    },
+    "Summer": {
+      "type": "object",
+      "properties": {
+        "Value1": {
+          "type": "number",
+          "format": "integer"
+        },
+        "Value2": {
+          "type": "string"
+        }
+      }
+    },
+    "SingleColumnOneOfObject": {
+      "type": "object",
+      "properties": {
+        "Spring": {
+          "$ref": "#/definitions/Spring"
+        },
+        "Summer": {
+          "$ref": "#/definitions/Summer"
+        }
+      },
+      "x-valueRange": "SingleColumn",
+      "x-oneOf": true
     },
     "Object": {
       "type": "object",
@@ -62,6 +110,12 @@
         },
         "Object": {
           "$ref": "#/definitions/InnerObject"
+        },
+        "SingleColumnObject": {
+          "$ref": "#/definitions/SingleColumnObject"
+        },
+        "SingleColumnAnyOfObject": {
+          "$ref": "#/definitions/SingleColumnAnyOfObject"
         }
       },
       "additionalProperties": false

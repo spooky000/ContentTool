@@ -225,6 +225,7 @@ namespace ContentTool.JsonGenerator
             if (tokens.Count < 1)
                 return;
 
+            // TODO: anyOf로 읽을지 그냥 object로 읽을지 설정 필요
             string objectName = tokens[0];
             foreach (var anyOf in objectSchema.Properties)
             {
@@ -328,19 +329,19 @@ namespace ContentTool.JsonGenerator
 
             int rowCount = 1;
 
-            switch (objectSchema.XlsxRead)
+            switch (objectSchema.ValueRange)
             {
-                case XlsxReadEnum.SingleRow:
+                case ValueRangeEnum.SingleRow:
                     writeProperties(objectSchema.Properties, columnName, rowObject);
                     break;
-                case XlsxReadEnum.MultiRow:
+                case ValueRangeEnum.MultiRow:
                     var properties = objectSchema.Properties;
                     var multiRowObject = rowObject.GetMultiRowObject(properties[0].Name);
 
                     rowCount = multiRowObject.Count;
                     writeProperties(properties, columnName, multiRowObject);
                     break;
-                case XlsxReadEnum.SingleColumn:
+                case ValueRangeEnum.SingleColumn:
                     var row = rowObject.GetFirstRow();
                     if (row == null)
                         return 0;
@@ -441,9 +442,9 @@ namespace ContentTool.JsonGenerator
 
             writer.WriteStartArray();
 
-            switch (schema.XlsxRead)
+            switch (schema.ValueRange)
             {
-                case XlsxReadEnum.SingleRow:
+                case ValueRangeEnum.SingleRow:
                     int maxArrayCount = GetArrayMaxCount(row.Table, columnName);
 
                     for (int i = 0; i < maxArrayCount; i++)
@@ -452,11 +453,11 @@ namespace ContentTool.JsonGenerator
                         WriteValue(writer, rowObject, schema.Item, arrayColumnName);
                     }
                     break;
-                case XlsxReadEnum.MultiRow:
+                case ValueRangeEnum.MultiRow:
                     // TODO: columName을 안 넘겨서 여기만 오브젝트 컬럼명의 일관성이 없다. 수정 필요.
                     WriteRows(writer, rowObject, schema.Item);
                     break;
-                case XlsxReadEnum.SingleColumn:
+                case ValueRangeEnum.SingleColumn:
                     object value = row[columnName];
                     if (schema.Item.Properties.Count == 0)
                     {

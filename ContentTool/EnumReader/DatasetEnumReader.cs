@@ -115,23 +115,23 @@ namespace ContentTool.EnumReader
 
             int rowCount = 1;
 
-            switch (objectSchema.XlsxRead)
+            switch (objectSchema.ValueRange)
             {
-                case XlsxReadEnum.SingleRow:
+                case ValueRangeEnum.SingleRow:
                     var row = rowObject.GetFirstRow();
                     if (row != null)
                     {
                         rows.Add(new RowObject(row));
                     }
                     break;
-                case XlsxReadEnum.MultiRow:
+                case ValueRangeEnum.MultiRow:
                     var properties = objectSchema.Properties;
                     var multiRowObject = rowObject.GetMultiRowObject(properties[0].Name);
 
                     rowCount = multiRowObject.Count;
                     rows.AddRange(multiRowObject.RowObjects);
                     break;
-                case XlsxReadEnum.SingleColumn:
+                case ValueRangeEnum.SingleColumn:
                     break;
                 default:
                     throw new NotImplementedException("not support");

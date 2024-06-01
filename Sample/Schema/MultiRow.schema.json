@@ -9,7 +9,7 @@
       "items": {
         "$ref": "#/definitions/MultiRow"
       },
-      "content_config": {
+      "x-contentConfig": {
         "sheets": [
           "Sheet1"
         ],
@@ -63,14 +63,10 @@
           "items": {
             "$ref": "#/definitions/SubObject"
           },
-          "extra": {
-            "xlsxRead": "MultiRow"
-          }
+          "x-valueRange": "MultiRow"
         }
       },
-      "extra": {
-        "xlsxRead": "MultiRow"
-      },
+      "x-valueRange": "MultiRow",
       "additionalProperties": false
     }
   }

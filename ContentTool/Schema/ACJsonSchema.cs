@@ -3,7 +3,7 @@ using NJsonSchema;
 
 namespace ContentTool.Schema;
 
-public enum XlsxReadEnum
+public enum ValueRangeEnum
 {
     SingleRow,
     MultiRow,
@@ -24,7 +24,7 @@ public class ACJsonSchema
 
     public List<ACJsonSchemaProperty> Properties { get; private set; } = new();
 
-    public XlsxReadEnum XlsxRead { get; private set; } = XlsxReadEnum.SingleRow;
+    public ValueRangeEnum ValueRange { get; private set; } = ValueRangeEnum.SingleRow;
 
     public ContentConfig? ContentConfig { get; private set; }
 
@@ -102,6 +102,7 @@ public class ACJsonSchema
         }
 
         ReadExtentionData(schema);
+        ReadExtentionDataV2(schema);
     }
 
     protected void ReadProperties(JsonSchema actualSchema)
@@ -133,14 +134,38 @@ public class ACJsonSchema
 
                 string xlsxReadStr = obj["xlsxRead"]?.Value<string>() ?? string.Empty;
 
-                XlsxReadEnum xlsxRead;
+                ValueRangeEnum xlsxRead;
                 if (System.Enum.TryParse(xlsxReadStr, true, out xlsxRead) == true)
-                    XlsxRead = xlsxRead;
+                    ValueRange = xlsxRead;
 
             }
         }
     }
 
+    protected void ReadExtentionDataV2(JsonSchema schema)
+    {
+        if (schema.ExtensionData != null)
+        {
+            if (schema.ExtensionData.TryGetValue("x-contentConfig", out var contentConfig) == true)
+            {
+                JObject obj = JObject.FromObject(contentConfig);
+
+                ContentConfig = new ContentConfig();
+                ContentConfig.Read(obj);
+            }
+
+            if (schema.ExtensionData.TryGetValue("x-valueRange", out var value) == true)
+            {
+                if(value is string valueRangeStr)
+                {
+                    ValueRangeEnum valueRange;
+                    if (System.Enum.TryParse(valueRangeStr, true, out valueRange) == true)
+                        ValueRange = valueRange;
+                }
+
+            }
+        }
+    }
 }
 
 

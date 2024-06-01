@@ -9,7 +9,7 @@
       "items": {
         "$ref": "#/definitions/Array"
       },
-      "content_config": {
+      "x-contentConfig": {
         "sheets": [
           "Sheet1"
         ],
@@ -40,9 +40,7 @@
             "type": "number",
             "format": "integer"
           },
-          "extra": {
-            "xlsxRead": "SingleColumn"
-          }
+          "x-valueRange": "SingleColumn"
         },
         "MultiColumn": {
           "type": "array",
