@@ -11,6 +11,16 @@
           3.0
         ],
         "SimpleId": "Item1"
+      },
+      "SingleColumnObject": {
+        "Value1": "str1",
+        "Value2": 45
+      },
+      "SingleColumnOneOfObject": {
+        "Spring": {
+          "Value1": "봄",
+          "Value2": 305
+        }
       }
     },
     {
@@ -24,6 +34,16 @@
           6.0
         ],
         "SimpleId": "Item2"
+      },
+      "SingleColumnObject": {
+        "Value1": "str2",
+        "Value2": 99
+      },
+      "SingleColumnOneOfObject": {
+        "Summer": {
+          "Value1": 608,
+          "Value2": "여름"
+        }
       }
     }
   ]

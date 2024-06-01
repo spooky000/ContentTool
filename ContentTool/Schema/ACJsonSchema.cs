@@ -25,6 +25,7 @@ public class ACJsonSchema
     public List<ACJsonSchemaProperty> Properties { get; private set; } = new();
 
     public ValueRangeEnum ValueRange { get; private set; } = ValueRangeEnum.SingleRow;
+    public bool OneOf { get; private set; }
 
     public ContentConfig? ContentConfig { get; private set; }
 
@@ -161,6 +162,15 @@ public class ACJsonSchema
                     ValueRangeEnum valueRange;
                     if (System.Enum.TryParse(valueRangeStr, true, out valueRange) == true)
                         ValueRange = valueRange;
+                }
+
+            }
+
+            if (schema.ExtensionData.TryGetValue("x-oneOf", out var value2) == true)
+            {
+                if(value2 is bool value2Bool)
+                {
+                    OneOf = value2Bool;
                 }
 
             }

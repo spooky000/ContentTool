@@ -59,8 +59,7 @@
           "type": "string"
         },
         "Value2": {
-          "type": "number",
-          "format": "integer"
+          "type": "integer"
         }
       },
       "x-valueRange": "SingleColumn"
@@ -72,8 +71,7 @@
           "type": "string"
         },
         "Value2": {
-          "type": "number",
-          "format": "integer"
+          "type": "integer"
         }
       }
     },
@@ -81,8 +79,7 @@
       "type": "object",
       "properties": {
         "Value1": {
-          "type": "number",
-          "format": "integer"
+          "type": "integer"
         },
         "Value2": {
           "type": "string"
@@ -114,8 +111,8 @@
         "SingleColumnObject": {
           "$ref": "#/definitions/SingleColumnObject"
         },
-        "SingleColumnAnyOfObject": {
-          "$ref": "#/definitions/SingleColumnAnyOfObject"
+        "SingleColumnOneOfObject": {
+          "$ref": "#/definitions/SingleColumnOneOfObject"
         }
       },
       "additionalProperties": false

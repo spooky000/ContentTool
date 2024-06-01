@@ -193,7 +193,7 @@ namespace ContentTool.JsonGenerator
             }
         }
 
-        DataRow GetObjectValueRow(string propertyName, ACJsonSchema objectSchema, List<string> valueTokens)
+        DataRow GetObjectValueRow(string propertyName, ACJsonSchema objectSchema, List<string> valueTokens, int offset)
         {
             _singleColumnObjects.TryGetValue(propertyName, out var dataTable);
             if (dataTable == null)
@@ -208,15 +208,15 @@ namespace ContentTool.JsonGenerator
             }
 
             DataRow singleRow = dataTable.NewRow();
-            for (int i = 1; i < valueTokens.Count; i++)
+            for (int i = offset; i < valueTokens.Count; i++)
             {
-                singleRow[i - 1] = valueTokens[i];
+                singleRow[i - offset] = valueTokens[i];
             }
 
             return singleRow;
         }
 
-        void WriteSingleColumnToObject(JsonWriter writer, string value, ACJsonSchema objectSchema)
+        void WriteSingleColumnToObject(JsonWriter writer, string value, ACJsonSchema objectSchema, string columnName)
         {
             if (objectSchema.Properties.Count == 0)
                 return;
@@ -225,34 +225,49 @@ namespace ContentTool.JsonGenerator
             if (tokens.Count < 1)
                 return;
 
-            // TODO: anyOf로 읽을지 그냥 object로 읽을지 설정 필요
-            string objectName = tokens[0];
-            foreach (var anyOf in objectSchema.Properties)
+            if (objectSchema.OneOf == true)
             {
-                string propertyName = anyOf.Name;
-                ACJsonSchema anyOfSchema = anyOf;
-                if (anyOf.Definition != null)
-                    anyOfSchema = anyOf.Definition;
-
-                if (propertyName == objectName)
+                string objectName = tokens[0];
+                foreach (var oneOf in objectSchema.Properties)
                 {
-                    if (tokens.Count == anyOfSchema.Properties.Count + 1)
+                    string propertyName = oneOf.Name;
+                    ACJsonSchema oneOfSchema = oneOf;
+                    if (oneOf.Definition != null)
+                        oneOfSchema = oneOf.Definition;
+
+                    if (propertyName == objectName)
                     {
-                        DataRow singleRow = GetObjectValueRow(propertyName, anyOfSchema, tokens);
-
-                        writer.WritePropertyName(tokens[0]);
-                        writer.WriteStartObject();
-
-                        foreach (var property in anyOfSchema.Properties)
+                        if (tokens.Count == oneOfSchema.Properties.Count + 1)
                         {
-                            writer.WritePropertyName(property.Name);
-                            WriteValue(writer, new RowObject(singleRow), property, property.Name);
+                            DataRow singleRow = GetObjectValueRow(propertyName, oneOfSchema, tokens, 1);
+
+                            writer.WritePropertyName(tokens[0]);
+                            writer.WriteStartObject();
+
+                            foreach (var property in oneOfSchema.Properties)
+                            {
+                                writer.WritePropertyName(property.Name);
+                                WriteValue(writer, new RowObject(singleRow), property, property.Name);
+                            }
+
+                            writer.WriteEndObject();
                         }
 
-                        writer.WriteEndObject();
+                        break;
                     }
+                }
+            }
+            else
+            {
+                if (tokens.Count == objectSchema.Properties.Count)
+                {
+                    DataRow singleRow = GetObjectValueRow(columnName, objectSchema, tokens, 0);
 
-                    break;
+                    foreach (var property in objectSchema.Properties)
+                    {
+                        writer.WritePropertyName(property.Name);
+                        WriteValue(writer, new RowObject(singleRow), property, property.Name);
+                    }
                 }
             }
         }
@@ -350,7 +365,7 @@ namespace ContentTool.JsonGenerator
 
                     if (value is string valueString)
                     {
-                        WriteSingleColumnToObject(writer, valueString, objectSchema);
+                        WriteSingleColumnToObject(writer, valueString, objectSchema, columnName);
                     }
                     break;
                 default:
