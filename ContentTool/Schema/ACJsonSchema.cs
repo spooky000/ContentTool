@@ -105,7 +105,6 @@ public class ACJsonSchema
             ReadProperties(schema.ActualSchema);
         }
 
-        ReadExtentionData(schema);
         ReadExtentionDataV2(schema);
     }
 
@@ -117,32 +116,6 @@ public class ACJsonSchema
             jsonProperty.Read(property.Value);
 
             Properties.Add(jsonProperty);
-        }
-    }
-
-    protected void ReadExtentionData(JsonSchema schema)
-    {
-        if (schema.ExtensionData != null)
-        {
-            if (schema.ExtensionData.TryGetValue("content_config", out var content_config) == true)
-            {
-                JObject obj = JObject.FromObject(content_config!);
-
-                ContentConfig = new ContentConfig();
-                ContentConfig.Read(obj);
-            }
-
-            if (schema.ExtensionData.TryGetValue("extra", out var extra) == true)
-            {
-                JObject obj = JObject.FromObject(extra!);
-
-                string xlsxReadStr = obj["xlsxRead"]?.Value<string>() ?? string.Empty;
-
-                ValueRangeEnum xlsxRead;
-                if (System.Enum.TryParse(xlsxReadStr, true, out xlsxRead) == true)
-                    ValueRange = xlsxRead;
-
-            }
         }
     }
 
@@ -160,7 +133,7 @@ public class ACJsonSchema
 
             if (schema.ExtensionData.TryGetValue("x-valueRange", out var value) == true)
             {
-                if(value is string valueRangeStr)
+                if (value is string valueRangeStr)
                 {
                     ValueRangeEnum valueRange;
                     if (System.Enum.TryParse(valueRangeStr, true, out valueRange) == true)
@@ -171,7 +144,7 @@ public class ACJsonSchema
 
             if (schema.ExtensionData.TryGetValue("x-oneOf", out var value2) == true)
             {
-                if(value2 is bool value2Bool)
+                if (value2 is bool value2Bool)
                 {
                     OneOf = value2Bool;
                 }
