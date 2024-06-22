@@ -20,7 +20,7 @@ public class ACJsonSchemaDefinition : ACJsonSchema
 
     public void Read(JsonSchema schema)
     {
-        DocumentPath = schema.ParentSchema.DocumentPath;
+        DocumentPath = schema.ParentSchema?.DocumentPath ?? "";
         ReadSchema(schema);
     }
 }

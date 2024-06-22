@@ -22,13 +22,16 @@ public class ACJsonSchemaEnum
         ReadEnum(schema.Enumeration, schema.EnumerationNames);
     }
 
-    void ReadEnum(ICollection<object> enumeration, Collection<string> enumerationNames)
+    void ReadEnum(ICollection<object?> enumeration, Collection<string> enumerationNames)
     {
         if (enumeration.Count == enumerationNames.Count)
         {
             // 이름, 값이 있는 enum은 표준 아님
             foreach (var item in enumeration.Zip(enumerationNames, (value, name) => (value, name)))
             {
+                if (item.value == null)
+                    continue;
+
                 Values.Add(item.name, item.value);
             }
         }
@@ -36,6 +39,9 @@ public class ACJsonSchemaEnum
         {
             foreach (var item in enumeration)
             {
+                if (item == null)
+                    continue;
+
                 string? itemString = item.ToString();
                 if (itemString == null)
                     continue;

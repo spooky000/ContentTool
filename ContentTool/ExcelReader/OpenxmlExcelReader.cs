@@ -21,27 +21,25 @@ public class OpenXmlExcel : IExcelReader
         string value = cell.CellValue.InnerText;
         if (cell.DataType != null)
         {
-            switch (cell.DataType.Value)
+            if (cell.DataType.Value == CellValues.SharedString)
             {
-                case CellValues.SharedString:
-                    {
-                        if (workbookPart.SharedStringTablePart == null)
-                            return value;
-
-                        return workbookPart.SharedStringTablePart.SharedStringTable.ChildElements.GetItem(int.Parse(value)).InnerText;
-                    }
-                case CellValues.Boolean:
-                    {
-                        return (value == "1") ? "true" : "false";
-                    }
-                case CellValues.Number:
+                if (workbookPart.SharedStringTablePart == null)
                     return value;
+
+                return workbookPart.SharedStringTablePart.SharedStringTable.ChildElements[int.Parse(value)].InnerText;
+            }
+            else if (cell.DataType.Value == CellValues.Boolean)
+            {
+                return (value == "1") ? "true" : "false";
+            }
+/*
+                case CellValues.Number:
                 case CellValues.Error:
                 case CellValues.String:
                 case CellValues.InlineString:
                 case CellValues.Date:
                     return value;
-            }
+*/
         }
 
         return value;

@@ -27,7 +27,7 @@ public class JsonDataValiator
         {
             if (detail == true)
             {
-                string jsonPath = Regex.Replace(validationError.Path, "^#/", "");
+                string jsonPath = Regex.Replace(validationError.Path ?? "", "^#/", "");
                 output += $"ErrorValue: {o.SelectToken(jsonPath)}\n\n";
             }
 
@@ -45,7 +45,7 @@ public class JsonDataValiator
         {
             output = string.Format("{0}: {1}", validationError.Kind, validationError.Path);
 
-            string jsonPath = Regex.Replace(validationError.Path, "^#/", "");
+            string jsonPath = Regex.Replace(validationError.Path ?? "", "^#/", "");
             output += $"\nErrorValue: {o.SelectToken(jsonPath)}";
         }
 

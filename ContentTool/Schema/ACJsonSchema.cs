@@ -50,7 +50,7 @@ public class ACJsonSchema
         try
         {
             JsonSchema schema = JsonSchema.FromFileAsync(fileName).GetAwaiter().GetResult();
-            Title = schema.Title;
+            Title = schema.Title ?? "";
 
             foreach (var keyValue in schema.Definitions)
             {
@@ -89,13 +89,16 @@ public class ACJsonSchema
         }
 
         Type = schema.Type;
-        Format = schema.Format;
+        Format = schema.Format ?? "";
 
         if (schema.Type == JsonObjectType.Array)
         {
-            // 배열인 경우 Item에 실제 타입 정보가 들어가 있음
-            Item = new ACJsonSchema(References);
-            Item.ReadSchema(schema.Item);
+            if (schema.Item != null)
+            {
+                // 배열인 경우 Item에 실제 타입 정보가 들어가 있음
+                Item = new ACJsonSchema(References);
+                Item.ReadSchema(schema.Item);
+            }
         }
         else if (schema.Type == JsonObjectType.Object)
         {
@@ -123,7 +126,7 @@ public class ACJsonSchema
         {
             if (schema.ExtensionData.TryGetValue("content_config", out var content_config) == true)
             {
-                JObject obj = JObject.FromObject(content_config);
+                JObject obj = JObject.FromObject(content_config!);
 
                 ContentConfig = new ContentConfig();
                 ContentConfig.Read(obj);
@@ -131,7 +134,7 @@ public class ACJsonSchema
 
             if (schema.ExtensionData.TryGetValue("extra", out var extra) == true)
             {
-                JObject obj = JObject.FromObject(extra);
+                JObject obj = JObject.FromObject(extra!);
 
                 string xlsxReadStr = obj["xlsxRead"]?.Value<string>() ?? string.Empty;
 
@@ -149,7 +152,7 @@ public class ACJsonSchema
         {
             if (schema.ExtensionData.TryGetValue("x-contentConfig", out var contentConfig) == true)
             {
-                JObject obj = JObject.FromObject(contentConfig);
+                JObject obj = JObject.FromObject(contentConfig!);
 
                 ContentConfig = new ContentConfig();
                 ContentConfig.Read(obj);

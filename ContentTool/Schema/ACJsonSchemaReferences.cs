@@ -12,12 +12,16 @@ public class ACJsonSchemaReferences
     {
         string refName = string.Empty;
 
-        foreach (var keyValue in schema.ParentSchema.Definitions)
+        if (schema.ParentSchema != null)
         {
-            if (schema == keyValue.Value)
+
+            foreach (var keyValue in schema.ParentSchema.Definitions)
             {
-                refName = keyValue.Key;
-                break;
+                if (schema == keyValue.Value)
+                {
+                    refName = keyValue.Key;
+                    break;
+                }
             }
         }
 
