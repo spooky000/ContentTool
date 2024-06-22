@@ -45,7 +45,7 @@ public class OpenXmlExcel : IExcelReader
         return value;
     }
 
-    public DataTable? ReadSheet(Sheet sheet, WorkbookPart workbookPart)
+    public DataTable? ReadSheet(string fileName, Sheet sheet, WorkbookPart workbookPart)
     {
         string sheetId = sheet.Id?.Value ?? string.Empty;
         Worksheet? worksheet = (workbookPart.GetPartById(sheetId) as WorksheetPart)?.Worksheet;
@@ -112,19 +112,12 @@ public class OpenXmlExcel : IExcelReader
             DataRow dataRow = dataTable.NewRow();
             List<Cell> dataCells = rows[row].Elements<Cell>().ToList();
 
-            /*
-                            if(dataTable.Columns.Count != dataCells.Count)
-                            {
-                                Console.WriteLine($"[WARN] column count does not match. headerColumns: {dataTable.Columns.Count}, dataColumns: {dataCells.Count}");
-                            }
-            */
-
             for (int col = 0; col < dataCells.Count; col++)
             {
                 int dataColIndex = GetColumnIndex(dataCells[col].CellReference!);
                 if (dataColIndex > dataTable.Columns.Count)
                 {
-                    Console.WriteLine($"[WARN] invalid column index. CellReference: {dataCells[col].CellReference}");
+                    // Console.WriteLine($"[WARN] [{fileName}, {sheet.Name}] invalid column index. CellReference: {dataCells[col].CellReference}");
                     continue;
                 }
 
@@ -139,9 +132,9 @@ public class OpenXmlExcel : IExcelReader
 
         return dataTable;
     }
-    public DataSet? Read(string fileName)
+    public DataSet? Read(string filePath)
     {
-        FileStream reader = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        FileStream reader = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         using SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(reader, false);
 
         var sheets = spreadsheetDocument.WorkbookPart?.Workbook.Sheets?.Elements<Sheet>();
@@ -153,7 +146,7 @@ public class OpenXmlExcel : IExcelReader
         {
             if (spreadsheetDocument.WorkbookPart != null)
             {
-                DataTable? dataTable = ReadSheet(sheet, spreadsheetDocument.WorkbookPart);
+                DataTable? dataTable = ReadSheet(Path.GetFileName(filePath), sheet, spreadsheetDocument.WorkbookPart);
                 if (dataTable == null)
                     continue;
 
